@@ -71,4 +71,4 @@ jobs:
         script: |
           docker stop node_app || true && docker rm node_app || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/projeto:latest
-          docker run -d --name node_app -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/projeto:latest
+          docker run -d --name node_app -p 8195:8195 ${{ secrets.DOCKER_USERNAME }}/projeto:latest
