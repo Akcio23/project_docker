@@ -1,4 +1,4 @@
-name: Deploy Docker Image
+name: CI/CD Pipeline
 
 on:
   push:
@@ -10,17 +10,65 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v3
+    - name: Checkout do repositório
+      uses: actions/checkout@v3
 
-      - name: Login no Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Login no Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build da imagem Docker
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/projeto:latest .
+    - name: Build da imagem Docker
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/projeto:latest .
 
-      - name: Push da imagem para o Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/projeto:latest
+    - name: Push para Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/projeto:latest
+
+  sonar-analysis:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do repositório
+      uses: actions/checkout@v3
+
+    - name: Copiar código para servidor remoto
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: 201.23.3.86
+        username: aluno
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "."
+        target: "~/app"
+
+    - name: Executar análise SonarQube no servidor remoto
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: 201.23.3.86
+        username: aluno
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker run -d --name sonarqube -p 9000:9000 sonarqube
+          sleep 60  # espera o Sonar subir
+          cd ~/app
+          sonar-scanner \
+            -Dsonar.projectKey=meu-projeto \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=admin \
+            -Dsonar.password=admin
+          docker stop sonarqube && docker rm sonarqube
+
+  deploy:
+    needs: sonar-analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy no servidor remoto
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: 201.23.3.86
+        username: aluno
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker stop node_app || true && docker rm node_app || true
+          docker pull ${{ secrets.DOCKER_USERNAME }}/projeto:latest
+          docker run -d --name node_app -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/projeto:latest
