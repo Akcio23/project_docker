@@ -14,7 +14,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
+    build: akcio23/projeto:latest
     container_name: node_app
     ports:
       - "8195:8195"

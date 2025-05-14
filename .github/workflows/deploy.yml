@@ -30,7 +30,7 @@ jobs:
     - name: Checkout do repositório
       uses: actions/checkout@v3
 
-    - name: Copiar código para servidor remoto
+    - name: Copiar código e docker-compose para servidor remoto
       uses: appleboy/scp-action@v0.1.4
       with:
         host: 201.23.3.86
@@ -62,13 +62,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy no servidor remoto
+    - name: Deploy usando docker-compose no servidor remoto
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: 201.23.3.86
         username: aluno
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker stop node_app || true && docker rm node_app || true
+          cd ~/app
+          docker-compose down || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/projeto:latest
-          docker run -d --name node_app -p 8195:8195 ${{ secrets.DOCKER_USERNAME }}/projeto:latest
+          docker-compose up -d --build
