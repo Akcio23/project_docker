@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import router from './routes.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = 8195;
 
 // Config para __dirname funcionar com ES Modules
 const __filename = fileURLToPath(import.meta.url);
