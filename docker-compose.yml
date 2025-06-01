@@ -4,7 +4,6 @@ services:
   postgres:
     image: postgres:16
     container_name: postgres_container
-    restart: unless-stopped
     ports:
       - "8194:5432"
     environment:
@@ -19,17 +18,10 @@ services:
   app:
     image: akcio23/projeto:latest
     container_name: node_app
-    restart: unless-stopped
     ports:
       - "8195:8195"
     depends_on:
       - postgres
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: mydb
     networks:
       - app-network
 
