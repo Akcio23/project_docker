@@ -73,4 +73,5 @@ jobs:
           docker compose down || true
           docker rm -f node_app || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/projeto:latest
-          docker compose up -d 
+          docker compose up -d --build
+
