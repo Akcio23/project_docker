@@ -1,33 +1,39 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  postgres:
-    image: postgres:16
-    container_name: postgres_container
-    ports:
-      - "8196:5432"
+  mysql:
+    image: mysql:8.0
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mydb
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "8196:3306"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - app-network
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
 
-  app:
-    image: akcio23/projeto:latest
-    container_name: node_app
+  backend:
+    image: akcio23/backend:latest
+    depends_on:
+      - mysql
     ports:
       - "8195:8195"
+    environment:
+      DB_HOST: mysql
+      DB_USER: user
+      DB_PASS: password
+      DB_NAME: mydb
+    restart: unless-stopped
+
+  frontend:
+    image: akcio23/frontend:latest
     depends_on:
-      - postgres
-    networks:
-      - app-network
+      - backend
+    ports:
+      - "8197:80"
+    restart: unless-stopped
 
 volumes:
-  pgdata:
-
-networks:
-  app-network:
-    driver: bridge
+  mysql_data:

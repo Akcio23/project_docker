@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do repositório
+      uses: actions/checkout@v3
+
+    - name: Login no Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build backend
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+    - name: Build frontend
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
+        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Copiar código e docker-compose para servidor remoto
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: 201.23.3.86
+        username: aluno
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "docker-compose.yml"
+        target: "~/app"
+
+    - name: Deploy usando docker-compose no servidor remoto
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: 201.23.3.86
+        username: aluno
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ~/app
+          docker compose down || true
+          docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+          docker compose up -d --build
