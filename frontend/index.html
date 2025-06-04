@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CRUD Moderno - Gerenciador de Itens</title>
   <style>
     * {
@@ -13,13 +13,14 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #121212 0%, #1e1e2f 100%);
+      color: #ddd;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Efeito de partículas animadas no fundo */
+    /* Fundo de partículas animadas mais discretas para dark */
     body::before {
       content: '';
       position: fixed;
@@ -28,9 +29,9 @@
       width: 100%;
       height: 100%;
       background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+        radial-gradient(circle at 20% 80%, rgba(90, 90, 130, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(140, 60, 90, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(90, 160, 200, 0.15) 0%, transparent 50%);
       animation: float 20s ease-in-out infinite;
       z-index: -1;
     }
@@ -57,40 +58,40 @@
     .header h1 {
       font-size: 3.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #ffffff, #f0f0f0);
+      background: linear-gradient(135deg, #ffffff, #bbb);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0.5rem;
-      text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      text-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
       animation: glow 2s ease-in-out infinite alternate;
     }
 
     @keyframes glow {
-      from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-      to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(120, 119, 198, 0.3); }
+      from { text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+      to { text-shadow: 0 0 35px rgba(255, 255, 255, 1), 0 0 50px rgba(90, 90, 130, 0.6); }
     }
 
     .subtitle {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.7);
       font-size: 1.2rem;
       font-weight: 300;
     }
 
     .form-container {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(30, 30, 45, 0.7);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 2.5rem;
       margin-bottom: 2rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
       transition: all 0.3s ease;
     }
 
     .form-container:hover {
       transform: translateY(-5px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 1);
     }
 
     .form-group {
@@ -101,29 +102,29 @@
     .form-input {
       width: 100%;
       padding: 1rem 1.5rem;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(50, 50, 70, 0.6);
+      border: 2px solid rgba(150, 150, 170, 0.3);
       border-radius: 15px;
-      color: white;
+      color: #eee;
       font-size: 1rem;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
 
     .form-input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(200, 200, 220, 0.6);
     }
 
     .form-input:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.2);
+      border-color: #8a8aff;
+      background: rgba(60, 60, 90, 0.8);
       transform: scale(1.02);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(138, 138, 255, 0.6);
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      background: linear-gradient(135deg, #6a75ff, #5147b9);
       border: none;
       padding: 1rem 2.5rem;
       border-radius: 15px;
@@ -136,6 +137,7 @@
       overflow: hidden;
       text-transform: uppercase;
       letter-spacing: 1px;
+      box-shadow: 0 6px 20px rgba(106, 117, 255, 0.7);
     }
 
     .btn-primary::before {
@@ -155,7 +157,7 @@
 
     .btn-primary:hover {
       transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4);
+      box-shadow: 0 15px 30px rgba(106, 117, 255, 0.9);
     }
 
     .btn-primary:active {
@@ -163,16 +165,17 @@
     }
 
     .items-container {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(30, 30, 45, 0.75);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(150, 150, 170, 0.15);
       border-radius: 20px;
       padding: 2rem;
       min-height: 300px;
+      box-shadow: 0 0 15px rgba(50, 50, 80, 0.6);
     }
 
     .items-header {
-      color: white;
+      color: #ddd;
       font-size: 1.5rem;
       font-weight: 600;
       margin-bottom: 1.5rem;
@@ -193,14 +196,15 @@
     }
 
     .item-card {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(40, 40, 65, 0.7);
+      border: 1px solid rgba(100, 100, 140, 0.3);
       border-radius: 15px;
       padding: 1.5rem;
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
       animation: slideIn 0.5s ease-out;
+      box-shadow: 0 0 15px rgba(60, 60, 90, 0.5);
     }
 
     @keyframes slideIn {
@@ -216,12 +220,12 @@
 
     .item-card:hover {
       transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      background: rgba(60, 60, 90, 0.8);
+      box-shadow: 0 10px 25px rgba(80, 80, 130, 0.9);
     }
 
     .item-info {
-      color: white;
+      color: #eee;
       margin-bottom: 1rem;
     }
 
@@ -229,11 +233,11 @@
       font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      color: #ffffff;
+      color: #d0d0ff;
     }
 
     .item-description {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(200, 200, 220, 0.85);
       line-height: 1.4;
     }
 
@@ -249,11 +253,12 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 3px 10px rgba(255, 71, 87, 0.7);
     }
 
     .btn-delete:hover {
       transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+      box-shadow: 0 5px 15px rgba(255, 71, 87, 1);
     }
 
     .btn-delete:active {
@@ -262,7 +267,7 @@
 
     .empty-state {
       text-align: center;
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(200, 200, 220, 0.6);
       font-size: 1.1rem;
       padding: 3rem 0;
     }
@@ -327,176 +332,91 @@
 
     <div class="form-container">
       <div class="form-group">
-        <input type="text" id="name" class="form-input" placeholder="Nome do item" required>
+        <input type="text" id="name" class="form-input" placeholder="Nome do item" required />
       </div>
       <div class="form-group">
-        <input type="text" id="description" class="form-input" placeholder="Descrição detalhada" required>
+        <input type="text" id="description" class="form-input" placeholder="Descrição do item" required />
       </div>
-      <button onclick="createItem()" class="btn-primary">
-        Adicionar Item
-      </button>
+      <button id="addBtn" class="btn-primary">Adicionar Item</button>
     </div>
 
     <div class="items-container">
-      <div class="items-header">
-        Seus Itens
-      </div>
-      <ul id="list" class="items-list"></ul>
+      <div class="items-header">Lista de Itens</div>
+      <ul id="itemsList" class="items-list">
+        <li class="empty-state">Nenhum item cadastrado.</li>
+      </ul>
     </div>
   </div>
 
   <script>
-    const API = 'http://201.23.3.86:8195/items';
+    const addBtn = document.getElementById('addBtn');
+    const nameInput = document.getElementById('name');
+    const descriptionInput = document.getElementById('description');
+    const itemsList = document.getElementById('itemsList');
 
-    async function fetchItems() {
-      try {
-        const list = document.getElementById('list');
-        list.classList.add('loading');
-        
-        const res = await fetch(API);
-        const items = await res.json();
-        
-        list.innerHTML = '';
-        list.classList.remove('loading');
-        
-        if (items.length === 0) {
-          list.innerHTML = '<div class="empty-state">Nenhum item encontrado. Adicione o primeiro!</div>';
-          return;
+    function createItemElement(name, description) {
+      const li = document.createElement('li');
+      li.classList.add('item-card');
+
+      const nameEl = document.createElement('div');
+      nameEl.classList.add('item-name');
+      nameEl.textContent = name;
+
+      const descEl = document.createElement('div');
+      descEl.classList.add('item-description');
+      descEl.textContent = description;
+
+      const infoEl = document.createElement('div');
+      infoEl.classList.add('item-info');
+      infoEl.appendChild(nameEl);
+      infoEl.appendChild(descEl);
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('btn-delete');
+      deleteBtn.textContent = 'Excluir';
+      deleteBtn.onclick = () => {
+        itemsList.removeChild(li);
+        if (itemsList.children.length === 0) {
+          const emptyMsg = document.createElement('li');
+          emptyMsg.classList.add('empty-state');
+          emptyMsg.textContent = 'Nenhum item cadastrado.';
+          itemsList.appendChild(emptyMsg);
         }
-        
-        items.forEach((item, index) => {
-          const li = document.createElement('li');
-          li.className = 'item-card';
-          li.style.animationDelay = `${index * 0.1}s`;
-          
-          li.innerHTML = `
-            <div class="item-info">
-              <div class="item-name">${escapeHtml(item.name)}</div>
-              <div class="item-description">${escapeHtml(item.description)}</div>
-            </div>
-            <button class="btn-delete" onclick="deleteItem(${item.id})">
-              Remover
-            </button>
-          `;
-          
-          list.appendChild(li);
-        });
-      } catch (error) {
-        console.error('Erro ao buscar itens:', error);
-        showNotification('Erro ao carregar itens', 'error');
-      }
+      };
+
+      li.appendChild(infoEl);
+      li.appendChild(deleteBtn);
+
+      return li;
     }
 
-    async function createItem() {
-      const nameInput = document.getElementById('name');
-      const descriptionInput = document.getElementById('description');
+    addBtn.addEventListener('click', () => {
       const name = nameInput.value.trim();
       const description = descriptionInput.value.trim();
-      
+
       if (!name || !description) {
-        showNotification('Por favor, preencha todos os campos', 'warning');
+        alert('Por favor, preencha todos os campos.');
         return;
       }
-      
-      try {
-        const btn = event.target;
-        btn.classList.add('loading');
-        btn.disabled = true;
-        
-        await fetch(API, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ name, description })
-        });
-        
-        nameInput.value = '';
-        descriptionInput.value = '';
-        
-        await fetchItems();
-        showNotification('Item adicionado com sucesso!', 'success');
-        
-      } catch (error) {
-        console.error('Erro ao criar item:', error);
-        showNotification('Erro ao adicionar item', 'error');
-      } finally {
-        const btn = document.querySelector('.btn-primary');
-        btn.classList.remove('loading');
-        btn.disabled = false;
-      }
-    }
 
-    async function deleteItem(id) {
-      if (!confirm('Tem certeza que deseja remover este item?')) {
-        return;
-      }
-      
-      try {
-        await fetch(`${API}/${id}`, { method: 'DELETE' });
-        await fetchItems();
-        showNotification('Item removido com sucesso!', 'success');
-      } catch (error) {
-        console.error('Erro ao deletar item:', error);
-        showNotification('Erro ao remover item', 'error');
-      }
-    }
+      // Remove mensagem de lista vazia, se existir
+      const emptyMsg = itemsList.querySelector('.empty-state');
+      if (emptyMsg) emptyMsg.remove();
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+      const itemElement = createItemElement(name, description);
+      itemsList.appendChild(itemElement);
 
-    function showNotification(message, type = 'info') {
-      // Implementação simples de notificação
-      const notification = document.createElement('div');
-      notification.textContent = message;
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        color: white;
-        font-weight: 500;
-        z-index: 1000;
-        animation: slideInRight 0.3s ease-out;
-        max-width: 300px;
-        ${type === 'success' ? 'background: linear-gradient(135deg, #00b894, #00a085);' : ''}
-        ${type === 'error' ? 'background: linear-gradient(135deg, #d63031, #b71c1c);' : ''}
-        ${type === 'warning' ? 'background: linear-gradient(135deg, #fdcb6e, #e17055);' : ''}
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease-out';
-        setTimeout(() => notification.remove(), 300);
-      }, 3000);
-    }
-
-    // Adicionar estilos de animação para notificações
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Permitir adicionar item com Enter
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.target.matches('#name') || e.target.matches('#description'))) {
-        createItem();
-      }
+      nameInput.value = '';
+      descriptionInput.value = '';
+      nameInput.focus();
     });
 
-    // Carregar itens ao iniciar
-    fetchItems();
+    // Permitir submit com Enter
+    [nameInput, descriptionInput].forEach(input => {
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') addBtn.click();
+      });
+    });
   </script>
 </body>
 </html>
