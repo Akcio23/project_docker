@@ -27,31 +27,32 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
   deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
+  needs: build-and-push
+  runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v3  # <- ESSENCIAL para copiar arquivos
+  steps:
+  - name: Checkout do repositório
+    uses: actions/checkout@v3
 
-      - name: Copiar código e docker-compose para servidor remoto
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: 201.23.3.86
-          username: aluno
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml backend frontend"
-          target: "~/app"
+  - name: Copiar código e docker-compose para servidor remoto
+    uses: appleboy/scp-action@v0.1.4
+    with:
+      host: 201.23.3.86
+      username: aluno
+      key: ${{ secrets.SSH_PRIVATE_KEY }}
+      source: "./docker-compose.yml"
+      target: "~/app"
+      strip_components: 0
 
-      - name: Deploy usando docker-compose no servidor remoto
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: 201.23.3.86
-          username: aluno
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/app
-            docker compose down || true
-            docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
-            docker compose up -d --build
+  - name: Deploy usando docker-compose no servidor remoto
+    uses: appleboy/ssh-action@v0.1.10
+    with:
+      host: 201.23.3.86
+      username: aluno
+      key: ${{ secrets.SSH_PRIVATE_KEY }}
+      script: |
+        cd ~/app
+        docker compose down || true
+        docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
+        docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+        docker compose up -d --build
