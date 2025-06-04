@@ -13,7 +13,7 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
@@ -28,9 +28,9 @@
       width: 100%;
       height: 100%;
       background-image: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+        radial-gradient(circle at 20% 80%, rgba(45, 45, 85, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(85, 45, 85, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(45, 85, 135, 0.4) 0%, transparent 50%);
       animation: float 20s ease-in-out infinite;
       z-index: -1;
     }
@@ -57,40 +57,41 @@
     .header h1 {
       font-size: 3.5rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #ffffff, #f0f0f0);
+      background: linear-gradient(135deg, #e0e0e0, #c0c0c0);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0.5rem;
-      text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+      text-shadow: 0 0 30px rgba(224, 224, 224, 0.3);
       animation: glow 2s ease-in-out infinite alternate;
     }
 
     @keyframes glow {
-      from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-      to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(120, 119, 198, 0.3); }
+      from { text-shadow: 0 0 20px rgba(224, 224, 224, 0.3); }
+      to { text-shadow: 0 0 30px rgba(224, 224, 224, 0.5), 0 0 40px rgba(45, 45, 85, 0.3); }
     }
 
     .subtitle {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(192, 192, 192, 0.7);
       font-size: 1.2rem;
       font-weight: 300;
     }
 
     .form-container {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 2.5rem;
       margin-bottom: 2rem;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
     }
 
     .form-container:hover {
       transform: translateY(-5px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .form-group {
@@ -101,29 +102,29 @@
     .form-input {
       width: 100%;
       padding: 1rem 1.5rem;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: 15px;
-      color: white;
+      color: #e0e0e0;
       font-size: 1rem;
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
     }
 
     .form-input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(192, 192, 192, 0.5);
     }
 
     .form-input:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.5);
       transform: scale(1.02);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      background: linear-gradient(135deg, #ff4757, #c44569);
       border: none;
       padding: 1rem 2.5rem;
       border-radius: 15px;
@@ -136,6 +137,7 @@
       overflow: hidden;
       text-transform: uppercase;
       letter-spacing: 1px;
+      box-shadow: 0 8px 25px rgba(255, 71, 87, 0.3);
     }
 
     .btn-primary::before {
@@ -163,16 +165,16 @@
     }
 
     .items-container {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 2rem;
       min-height: 300px;
     }
 
     .items-header {
-      color: white;
+      color: #e0e0e0;
       font-size: 1.5rem;
       font-weight: 600;
       margin-bottom: 1.5rem;
@@ -193,8 +195,8 @@
     }
 
     .item-card {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 15px;
       padding: 1.5rem;
       transition: all 0.3s ease;
@@ -216,12 +218,13 @@
 
     .item-card:hover {
       transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
 
     .item-info {
-      color: white;
+      color: #e0e0e0;
       margin-bottom: 1rem;
     }
 
@@ -229,11 +232,11 @@
       font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      color: #ffffff;
+      color: #f0f0f0;
     }
 
     .item-description {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(192, 192, 192, 0.8);
       line-height: 1.4;
     }
 
@@ -262,7 +265,7 @@
 
     .empty-state {
       text-align: center;
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(192, 192, 192, 0.6);
       font-size: 1.1rem;
       padding: 3rem 0;
     }
@@ -316,6 +319,24 @@
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
+
+    /* Scrollbar customizada para tema dark */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -346,7 +367,7 @@
   </div>
 
   <script>
-    const API = 'http://201.23.3.86:8195/items';
+    const API = 'http://localhost:8195/items';
 
     async function fetchItems() {
       try {
