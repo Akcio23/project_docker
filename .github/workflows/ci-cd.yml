@@ -31,13 +31,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout do repositório
+      uses: actions/checkout@v3
+
     - name: Copiar código e docker-compose para servidor remoto
       uses: appleboy/scp-action@v0.1.4
       with:
         host: 201.23.3.86
         username: aluno
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml"
+        source: "docker-compose.yml backend frontend"
         target: "~/app"
 
     - name: Deploy usando docker-compose no servidor remoto
