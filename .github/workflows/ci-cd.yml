@@ -60,7 +60,7 @@ jobs:
             ./../sonar-scanner/bin/sonar-scanner \
               -Dsonar.projectKey=app \
               -Dsonar.sources=. \
-              -Dsonar.host.url=http://localhost:9000 \
+              --Dsonar.host.url=http://localhost:8198\
               -Dsonar.login=admin \
               -Dsonar.password=admin || exit 1
 
