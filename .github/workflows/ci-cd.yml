@@ -63,14 +63,14 @@ jobs:
               sleep 5
             done
 
-            # Rodar análise com sonar-scanner via container
-            docker run --rm \
+            # Rodar análise com sonar-scanner via container (usando --network=host para acessar SonarQube no host)
+            docker run --rm --network=host \
               -v ~/app:/usr/src \
               -w /usr/src \
               sonarsource/sonar-scanner-cli \
               -Dsonar.projectKey=meu-projeto \
               -Dsonar.sources=. \
-              -Dsonar.host.url=http://host.docker.internal:9000 \
+              -Dsonar.host.url=http://localhost:9000 \
               -Dsonar.login=admin \
               -Dsonar.password=admin
 
