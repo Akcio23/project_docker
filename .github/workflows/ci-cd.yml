@@ -31,46 +31,69 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout do repositório
-      uses: actions/checkout@v3
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
 
-    - name: Copiar código e docker-compose para servidor remoto
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: 201.23.3.86
-        username: aluno
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "."
-        target: "~/app"
+      - name: Copiar código e docker-compose para servidor remoto
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: 201.23.3.86
+          username: aluno
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "~/app"
 
-    - name: Executar análise SonarQube no servidor remoto
-      uses: appleboy/ssh-action@v0.1.10
-      with:
-        host: 201.23.3.86
-        username: aluno
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          docker run -d --name sonarqube -p 9000:9000 sonarqube
-          sleep 60  # espera o Sonar subir
-          cd ~/app
-          sonar-scanner \
-            -Dsonar.projectKey=meu-projeto \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=http://localhost:9000 \
-            -Dsonar.login=admin \
-            -Dsonar.password=admin
-          docker stop sonarqube && docker rm sonarqube
+      - name: Executar análise SonarQube no servidor remoto
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 201.23.3.86
+          username: aluno
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Iniciar container SonarQube em background
+            docker run -d --name sonarqube -p 9000:9000 sonarqube
 
+            # Esperar SonarQube ficar disponível na porta 9000 (timeout 120s)
+            echo "Esperando SonarQube subir na porta 9000..."
+            for i in {1..24}; do
+              if curl -s http://localhost:9000 > /dev/null; then
+                echo "SonarQube está ativo!"
+                break
+              fi
+              sleep 5
+            done
+
+            # Rodar análise com sonar-scanner
+            cd ~/app
+            sonar-scanner \
+              -Dsonar.projectKey=meu-projeto \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=http://localhost:9000 \
+              -Dsonar.login=admin \
+              -Dsonar.password=admin
+
+            # Verificar status do quality gate usando API SonarQube
+            STATUS=$(curl -s -u admin:admin "http://localhost:9000/api/qualitygates/project_status?projectKey=meu-projeto" | grep -oP '(?<="status":")[A-Z]+(?=")')
+
+            echo "Status do Quality Gate: $STATUS"
+
+            # Parar e remover o container SonarQube
+            docker stop sonarqube && docker rm sonarqube
+
+            if [ "$STATUS" != "OK" ]; then
+              echo "Qualidade do código não aprovada, falhando pipeline."
+              exit 1
+            fi
 
   deploy:
-    needs: build-and-push
+    needs: sonar-analysis
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v3
 
-      - name: Copiar código e docker-compose para servidor remoto
+      - name: Copiar docker-compose para servidor remoto
         uses: appleboy/scp-action@v0.1.4
         with:
           host: 201.23.3.86
