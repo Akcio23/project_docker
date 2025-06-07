@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v3
@@ -25,46 +26,15 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
-  sonar-analysis:
+  deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    steps:
-      - name: Acesso SSH para análise SonarQube no servidor remoto
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: 201.23.3.86
-          username: aluno
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            docker stop sonar || true
-            docker rm sonar || true
 
-            docker run -d --name sonar -p 8198:9000 sonarqube:community
-
-            echo "Aguardando SonarQube iniciar..."
-            sleep 40
-
-            git clone https://github.com/${{ github.repository }} ~/app/project_docker
-
-            docker run --rm --network host \
-              -v "$HOME/app/project_docker:/usr/src" \
-              sonarsource/sonar-scanner-cli \
-              -Dsonar.projectKey=app \
-              -Dsonar.sources=. \
-              -Dsonar.host.url=http://localhost:8198 \
-              -Dsonar.token=${{ secrets.SONAR_TOKEN }} || exit 1
-
-            docker stop sonar
-            docker rm sonar
-
-  deploy:
-    needs: sonar-analysis
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v3
 
-      - name: Copiar docker-compose.yml para o servidor remoto
+      - name: Copiar código e docker-compose para servidor remoto
         uses: appleboy/scp-action@v0.1.4
         with:
           host: 201.23.3.86
