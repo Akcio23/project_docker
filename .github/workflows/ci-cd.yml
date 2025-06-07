@@ -49,18 +49,15 @@ jobs:
             echo "Aguardando SonarQube iniciar..."
             sleep 40
 
-            # Fazer análise com SonarScanner
-            mkdir -p ~/app/sonar && cd ~/app/sonar
-            curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-            unzip sonar-scanner.zip && mv sonar-scanner-* sonar-scanner
+            # Fazer análise com SonarScanner via Docker
+            git clone https://github.com/${{ github.repository }} ~/app/project_docker
 
-            git clone https://github.com/${{ github.repository }} app
-            cd app
-
-            ./../sonar-scanner/bin/sonar-scanner \
+            docker run --rm --network host \
+              -v "$HOME/app/project_docker:/usr/src" \
+              sonarsource/sonar-scanner-cli \
               -Dsonar.projectKey=app \
               -Dsonar.sources=. \
-              --Dsonar.host.url=http://localhost:8198\
+              -Dsonar.host.url=http://localhost:8198 \
               -Dsonar.login=admin \
               -Dsonar.password=admin || exit 1
 
