@@ -53,30 +53,29 @@ jobs:
             # Iniciar container SonarQube em background
             docker run -d --name sonarqube -p 9000:9000 sonarqube
 
-            # Esperar SonarQube ficar disponível na porta 9000 (timeout 120s)
-            echo "Esperando SonarQube subir na porta 9000..."
-            for i in {1..24}; do
-              if curl -s http://localhost:9000 > /dev/null; then
+            echo "Esperando SonarQube subir e responder API na porta 9000..."
+            for i in {1..60}; do
+              if curl -s http://localhost:9000/api/server/version | grep -q '^[0-9]\.'; then
                 echo "SonarQube está ativo!"
                 break
               fi
+              echo "Aguardando SonarQube... $((i*5)) segundos"
               sleep 5
             done
 
-            # Rodar análise com sonar-scanner via container (usando --network=host para acessar SonarQube no host)
-            docker run --rm --network=host \
+            # Rodar análise com sonar-scanner via container, usando IP do host
+            docker run --rm \
               -v ~/app:/usr/src \
               -w /usr/src \
               sonarsource/sonar-scanner-cli \
               -Dsonar.projectKey=meu-projeto \
               -Dsonar.sources=. \
-              -Dsonar.host.url=http://localhost:9000 \
+              -Dsonar.host.url=http://201.23.3.86:9000 \
               -Dsonar.login=admin \
               -Dsonar.password=admin
 
-            # Verificar status do quality gate usando API SonarQube
+            # Verificar status do quality gate
             STATUS=$(curl -s -u admin:admin "http://localhost:9000/api/qualitygates/project_status?projectKey=meu-projeto" | grep -oP '(?<="status":")[A-Z]+(?=")')
-
             echo "Status do Quality Gate: $STATUS"
 
             # Parar e remover o container SonarQube
