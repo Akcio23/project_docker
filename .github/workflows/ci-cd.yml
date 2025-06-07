@@ -26,7 +26,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
-sonar-analysis:
+  sonar-analysis:
     needs: build-and-push
     runs-on: ubuntu-latest
 
