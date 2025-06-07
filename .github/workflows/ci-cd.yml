@@ -31,6 +31,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Análise com SonarQube via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 201.23.3.86
+          username: aluno
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Parar e remover container anterior (se existir)
+            docker stop sonar || true
+            docker rm sonar || true
+
+            # Subir SonarQube
+            docker run -d --name sonar -p 8198:9000 sonarqube:community
+
+            echo "Aguardando SonarQube ficar pronto..."
+            for i in {1..30}; do
+              status=$(curl -s http://localhost:8198/api/system/health | grep -o '"status":"GREEN"')
+              if [ "$status" = '"status":"GREEN"' ]; then
+                echo "SonarQube está pronto!"
+                break
+              fi
+              echo "Aguardando... ($i)"
+              sleep 5
+            done
+
+            # Clonar repositório
+            git clone https://github.com/${{ github.repository }} ~/app/project_docker
+
+            # Executar análise com sonar-scanner-cli
+            docker run --rm --network host \
+              -v "$HOME/app/project_docker:/usr/src" \
+              sonarsource/sonar-scanner-cli \
+              -Dsonar.projectKey=app \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=http://localhost:8198 \
+              -Dsonar.token=admin || exit 1
+
+            # Parar e remover container SonarQube
+            docker stop sonar
+            docker rm sonar
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Acesso SSH para análise SonarQube no servidor remoto
         uses: appleboy/ssh-action@v0.1.10
         with:
